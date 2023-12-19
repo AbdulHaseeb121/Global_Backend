@@ -112,7 +112,24 @@ const AuthController = {
         catch (error) {
             res.status(400).send(CourseResponse(false, "Internal Server Error", error));
         }
-    }
+    },
+
+    checkStatus: async (req, res) => {
+        try {
+            let projectId = req.params.id
+            const project = await AuthModel.findByIdAndUpdate(
+                projectId,
+                {  userStatus: 'selected' },
+                { new: true }
+            );
+            if (!project) {
+                return res.status(404).json({ message: 'Project not found' });
+            }
+            return res.json(project);
+        } catch (error) {
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+    },
 
 }
 

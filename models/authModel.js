@@ -22,8 +22,11 @@ const AuthScheema = mongoose.Schema({
         type:String,
         require: (true , "LastName must  required")
     },
-
-
+    userStatus:{
+        type:String,
+        enum:['selected' , 'unSelected'],
+        default:'unSelected'
+    }
 
 
 })
