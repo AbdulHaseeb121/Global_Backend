@@ -5,14 +5,14 @@ const Cors = require('cors')
 const route = require('./Router/Authrouth')
 const mongoose = require('mongoose');
 const courseRoute = require('./Router/CourseRoute');
-const router = require('./Router/TeamRoute');
+// const router = require('./Router/TeamRoute');
 const App = express()
 App.use(express.json())
 App.use(Cors({ origin: true, credentials: true }))
 // App.use('/course', courseRoute)
 App.use('/course' , courseRoute)
 App.use('/auth', route)
-App.use('/Team' , router)
+// App.use('/Team' , router)
 mongoose.connect(process.env.MONGOS_URL)
     .then(res => {
         App.listen(process.env.PORT, () => {
