@@ -6,7 +6,7 @@ route.get('/',AuthController.getUsers)
 route.post('/login', AuthController.login)
 route.post('/signUp', AuthController.signUp)
 route.get('/checkAuth' , AuthController.checkAuth)
-route.post('/:id/selectedUser' , AuthController.checkStatus)
+route.put('/:id/selectedUser' , AuthController.checkStatus)
 
 
 module.exports = route
