@@ -1,6 +1,6 @@
 const { CourseResponse } = require("../helpers/helpers");
 const CourseModel = require("../models/courseModel");
-
+const Team = require('../models/teamModal')
 
 const CourseController = {
 
@@ -28,26 +28,43 @@ const CourseController = {
     },
     add: async (req, res) => {
         try {
-            const { Title , Description } = req.body
-            const obj = {Title , Description}
-            const errArr = []
-            if (!obj.Title) {
-                errArr.push('Required Title')
+            const { Title, Description, teamId } = req.body;
+    
+            // Check karein ke team aur member mojood hain
+            const team = await Team.findById(teamId);
+            // const user = await AuthModel.findById(assignedTo);
+    
+            if (!team) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Team  nahi mila',
+                });
             }
-            if (!obj.Description) {
-                errArr.push('Required Description')
-            }
-            if (errArr.length > 0) {
-                res.status(401).send(CourseResponse(false, 'Validation Error!', errArr))
-            }
-            else {
-                const course = await new CourseModel(obj)
-                const result = await course.save()
-                res.status(200).send(CourseResponse(true, "Data Added Successfully", result))
-            }
-        }
-        catch (e) {
-            res.send(CourseResponse(false, "Data Not Added! :(", e))
+    
+            // Task ko create karein
+            const newTask = await CourseModel.create({
+                Title,
+                Description,
+                teamId,
+            });
+    
+            // Update team ke tasks array mein newTask ko push karein
+            await Team.findByIdAndUpdate(team, { $push: { tasks: newTask } });
+    
+            // Update user ke tasks array mein newTask ko push karein
+
+            return res.status(201).json({
+                success: true,
+                message: 'Task successfully assign kiya gaya hai',
+                task: newTask,
+            });
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({
+                success: false,
+                message: 'Task assign karne mein kuch problem aayi hai',
+                error: error.message,
+            });
         }
     },
     edit: async (req, res) => {
