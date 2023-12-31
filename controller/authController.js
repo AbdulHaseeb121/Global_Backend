@@ -6,8 +6,8 @@ const AuthModel = require("../models/authModel")
 const AuthController = {
     signUp: async (req, res) => {
         try {
-            const { email, password,   firstName, lastName ,   } = req.body
-            const obj = { email, password,   firstName , lastName, }
+            const { email, password, firstName, lastName, } = req.body
+            const obj = { email, password, firstName, lastName, }
             const errArr = []
             if (!obj.email) {
                 errArr.push("Email is required")
@@ -21,7 +21,7 @@ const AuthController = {
             if (!obj.lastName) {
                 errArr.push("LastName is required")
             }
-           
+
             if (errArr.length > 0) {
                 res.send(CourseResponse(false, "Validation Error", errArr))
             }
@@ -54,10 +54,13 @@ const AuthController = {
                     const token = jwt.sign({ ...userExist }, process.env.SECRET_KEY)
                     res.send(CourseResponse(true, "Data Added Successfully", { user: userExist, token: token }))
                 }
+                else {
+                    res.send(CourseResponse(false, "Your Password is incorrect", null))
+                }
             }
 
             else {
-                res.status(404).send(CourseResponse(false, error, null))
+                res.status(404).send(CourseResponse(false, 'your email is invalid', null))
             }
         }
         catch (error) {
@@ -81,22 +84,22 @@ const AuthController = {
     },
 
     AdminProtected: async (req, res, next) => {
-        try{
+        try {
             const token = req.headers.authorization.split(' ')[1]
-            jwt.verify(token,process.env.SECRET_KEY,(err, decode) => {
+            jwt.verify(token, process.env.SECRET_KEY, (err, decode) => {
                 if (err) {
                     res.status(401).send(CourseResponse(false, ' UnAuthorize ', err))
                 } else {
                     if (decode._doc.userType == "admin") {
                         next()
-                    }else{
-                        res.status(401).send(CourseResponse(false,"You Have No Rights For This Action" , err))
+                    } else {
+                        res.status(401).send(CourseResponse(false, "You Have No Rights For This Action", err))
                     }
-        
+
                 }
             })
-        }catch(error){
-         res.status(400).send(CourseResponse(false, "Data Not Found", error));
+        } catch (error) {
+            res.status(400).send(CourseResponse(false, "Data Not Found", error));
         }
     },
 
@@ -119,7 +122,7 @@ const AuthController = {
             let projectId = req.params.id
             const project = await AuthModel.findByIdAndUpdate(
                 projectId,
-                {  userStatus: 'selected' },
+                { userStatus: 'selected' },
                 { new: true }
             );
             if (!project) {

@@ -87,6 +87,8 @@ const TeamController = {
       } else {
         const members = team.members.map(member => ({
           _id: member._id,
+          firstName: member.firstName || null,
+          lastName: member.lastName || null,
           // Add other member properties as needed
         }));
   

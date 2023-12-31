@@ -4,6 +4,7 @@ const router = express.Router();
 
 router.post('/create', TeamController.createTeam);
 router.get('/', TeamController.getAllTeamsWithMembers);
+router.get('/:id', TeamController.getTeamMembers);
 router.post('/sendMessage', async (req, res) => {
     const { teamId, senderId , content } = req.body;
     TeamController.sendMessage(req.app.io, { teamId, content , senderId });

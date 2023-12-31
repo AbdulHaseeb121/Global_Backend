@@ -8,6 +8,7 @@ const socketIo = require('socket.io');
 const http = require('http');
 const courseRoute = require('./Router/CourseRoute');
 const router = require('./Router/Teamroute');
+const info = require('./utils/SendMail');
 const App = express()
 const server = http.createServer(App);
 const io = socketIo(server);
@@ -20,6 +21,7 @@ App.use('/auth', route)
 App.use('/team' , router)
 mongoose.connect(process.env.MONGOS_URL,{ useNewUrlParser: true, useUnifiedTopology: true })
 .then(res => {
+    info()
     io.on('connection', (socket) => {
         console.log('User connected');
         socket.on('disconnect', () => {
